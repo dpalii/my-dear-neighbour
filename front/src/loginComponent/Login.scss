@@ -1,0 +1,23 @@
+.auth {
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    padding: 30px;
+    width: 300px;
+
+    a {
+        display: block;
+        margin-top: 10px;
+        font-family: 'Roboto';
+        text-decoration: none;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    button {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+    }
+}

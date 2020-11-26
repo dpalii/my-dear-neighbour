@@ -53,6 +53,6 @@ const certificate = fs.readFileSync(path.join(__dirname, 'sslcert', 'server.cert
 const credentials = { key: privateKey, cert: certificate };
 const httpsServer = https.createServer(credentials, app);
 
-httpsServer.listen(8443, () => {
+httpsServer.listen(port, () => {
     console.log("Server is listening");
 });

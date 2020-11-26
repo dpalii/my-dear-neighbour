@@ -70,7 +70,7 @@ class UserController {
 
             try {
                 const credentials = await Credentials.findOneAndUpdate({ 
-                    username: user.username, 
+                    phone: user.phone, 
                     password: getHash(oldPassword) 
                 }, 
                 { 

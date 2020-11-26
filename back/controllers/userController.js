@@ -15,7 +15,9 @@ class UserController {
         try {
             const groups = await GroupUser.find({
                 user: user._id
-            }).exec();
+            })
+                .populate('group')
+                .exec();
 
             res.status(200).json({ groups: groups });
         }
@@ -36,10 +38,14 @@ class UserController {
 
             if (!deletedUser || !deletedCredentials) {
                 res.status(400).json({ message: "User not found" });
+                return;
             }
-            else {
-                res.status(200).json({ message: "Success" });
-            }
+
+            await GroupUser.deleteMany({
+                user: user._id
+            }).exec();
+            
+            res.status(200).json({ message: "Success" });
         }
         catch(err) {
             console.log(err);
@@ -113,7 +119,7 @@ class UserController {
                 !address.country || !nameRegEx.test(address.country) ||
                 !address.city || !nameRegEx.test(address.city) ||
                 !address.street || !nameRegEx.test(address.street) ||
-                !address.houseNumber || !Number.isInteger(address.houseNumber) ||
+                !address.house_number || !Number.isInteger(address.house_number) ||
                 !address.entrance || !Number.isInteger(address.entrance) || 
                 !address.floor || !Number.isInteger(address.floor) || 
                 !address.flat || !Number.isInteger(address.flat)) {
@@ -129,9 +135,9 @@ class UserController {
                     return;
                 }
 
-                if (oldUser.isAtHome != newUser.isAtHome && typeof(newUser.isAtHome) === Boolean) {
-                    newUser.isAtHome = newUser.isAtHome;
-                    newUser.lastStatusChange = new Date();
+                if (oldUser.is_at_home != newUser.is_at_home && typeof(newUser.is_at_home) === Boolean) {
+                    newUser.is_at_home = newUser.is_at_home;
+                    newUser.last_status_change = new Date();
                 }
 
                 const updatedUser = await User.findByIdAndUpdate(user._id, { 

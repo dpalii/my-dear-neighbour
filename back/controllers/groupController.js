@@ -7,7 +7,7 @@ class GroupController {
         const user = req.user;
         
         try {
-            const houseAddress = [user.country, user.city, user.street, user.houseNumber].join(', ');
+            const houseAddress = [user.country, user.city, user.street, user.house_number].join(', ');
             const entranceAddress = [houseAddress, user.entrance].join(', ');
             const floorAddress = [entranceAddress, user.floor].join(', ');
             const flatAddress = [floorAddress, user.flat].join(', ');

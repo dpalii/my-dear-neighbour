@@ -46,6 +46,8 @@ class GroupUserController {
         const groupId = req.params.groupId;
         const groupUser = req.groupUser;
         const showRequests = req.query.show_requests === 'true' ? true : false;
+        
+        const confirmed = !(showRequests && groupUser.is_admin);
 
         if (showRequests && !groupUser.is_admin) {
             res.status(401).json("You're not authorized to view request to join group");
@@ -55,7 +57,7 @@ class GroupUserController {
         try {
             const users = await GroupUser.find({
                 group: groupId,
-                confirmed: showRequests ? false : true
+                confirmed: confirmed
             })
                 .populate('user')
                 .populate('group')

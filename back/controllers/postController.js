@@ -1,4 +1,5 @@
 const Post = require('../models/post');
+const user = require('../models/user');
 const Vote = require('../models/vote');
 
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -30,7 +31,7 @@ class PostController {
         
         try {
             const newPost = new Post({
-                createdDate: new Date(),
+                created_date: new Date(),
                 confirmed: groupUser.is_admin,
                 group: groupId,
                 creator: user._id,
@@ -110,9 +111,16 @@ class PostController {
 
     static async getGroupPosts(req, res) {
         const groupId = req.params.groupId;
+        const unapproved = req.query.unapproved;
+        const groupUser = req.groupUser;
+
+        const confirmed = !(unapproved == 'true' && groupUser.is_admin);
 
         try {
-            const posts = await Post.find({group: groupId})
+            const posts = await Post.find({
+                group: groupId,
+                confirmed: confirmed
+            })
                 .populate('creator')
                 .populate('group')
                 .exec();
@@ -130,18 +138,25 @@ class PostController {
 
         try {
             const [post, votes] = await Promise.all([
-                Post.findOne({group: groupId, _id: postId})
+                Post.findOne({
+                    group: groupId, 
+                    _id: postId
+                })
                     .populate('creator')
                     .populate('group')
                     .exec(),
                 Vote.find({post: postId}).exec()
             ]);
+            if (!post.confirmed && !user.is_admin) {
+                res.status(403).json({message: "You can't view this post"});
+                return;
+            }
             if (post.is_poll) {
                 for (let option of post.options) {
                     option.votes = votes.filter(vote => vote.option == option.name).length;
                 }
             }
-            res.status(200).json({'post': post});
+            res.status(200).json({post: post});
         }
         catch(e) {
             console.log(e);

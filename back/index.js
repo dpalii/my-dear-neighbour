@@ -1,5 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -8,6 +11,8 @@ const userRouter = require('./routes/userRouter');
 const groupUserRouter = require('./routes/groupUserRouter');
 const postRouter = require('./routes/postRouter');
 const groupRouter = require('./routes/groupRouter');
+const voteRouter = require('./routes/voteRouter');
+const { dirname } = require('path');
 
 const app = express();
 const port = process.env.PORT;
@@ -36,12 +41,18 @@ app.use('/api', userRouter);
 app.use('/api', groupUserRouter);
 app.use('/api', postRouter);
 app.use('/api', groupRouter);
+app.use('/api', voteRouter);
 
 mongoose.connect(mongourl, mongoOptions, (err) => {
     if (err)
         console.log(err);
 });
 
-app.listen(port, () => {
-    console.log('Server is listening');
+const privateKey  = fs.readFileSync(path.join(__dirname, 'sslcert', 'server.key'), 'utf8');
+const certificate = fs.readFileSync(path.join(__dirname, 'sslcert', 'server.cert'), 'utf8');
+const credentials = { key: privateKey, cert: certificate };
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(8443, () => {
+    console.log("Server is listening");
 });

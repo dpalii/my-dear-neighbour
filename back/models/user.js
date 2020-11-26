@@ -16,12 +16,12 @@ const schema = new mongoose.Schema({
         required: true,
         unique: false
     },
-    isAtHome: {
+    is_at_home: {
         type: Boolean,
         required: false,
         unique: false
     },
-    lastStatusChange: {
+    last_status_change: {
         type: Date,
         required: false,
         unique: false
@@ -41,7 +41,7 @@ const schema = new mongoose.Schema({
         required: true,
         unique: false
     },
-    houseNumber: {
+    house_number: {
         type: Number,
         required: true,
         min: 1,

@@ -40,7 +40,7 @@ class AuthController {
                 !address.country || !nameRegEx.test(address.country) ||
                 !address.city || !nameRegEx.test(address.city) ||
                 !address.street || !nameRegEx.test(address.street) ||
-                !address.houseNumber || !Number.isInteger(address.houseNumber) ||
+                !address.house_number || !Number.isInteger(address.house_number) ||
                 !address.entrance || !Number.isInteger(address.entrance) || 
                 !address.floor || !Number.isInteger(address.floor) || 
                 !address.flat || !Number.isInteger(address.flat)) {
@@ -57,7 +57,7 @@ class AuthController {
             const user = new User({
                 phone: phone,
                 fullname: fullname,
-                createdDate: new Date(),
+                created_date: new Date(),
                 ...address
             });
     
@@ -67,7 +67,7 @@ class AuthController {
                     user.save()
                 ]);
 
-                const houseAddress = [address.country, address.city, address.street, address.houseNumber].join(', ');
+                const houseAddress = [address.country, address.city, address.street, address.house_humber].join(', ');
                 const entranceAddress = [houseAddress, address.entrance].join(', ');
                 const floorAddress = [entranceAddress, address.floor].join(', ');
                 const flatAddress = [floorAddress, address.flat].join(', ');

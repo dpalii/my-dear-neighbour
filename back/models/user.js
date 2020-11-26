@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         required: true,
         unique: false
     },
-    createdDate: {
+    created_date: {
         type: Date,
         required: true,
         unique: false

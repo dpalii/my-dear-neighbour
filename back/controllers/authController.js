@@ -67,7 +67,7 @@ class AuthController {
                     user.save()
                 ]);
 
-                const houseAddress = [address.country, address.city, address.street, address.house_humber].join(', ');
+                const houseAddress = [address.country, address.city, address.street, address.house_number].join(', ');
                 const entranceAddress = [houseAddress, address.entrance].join(', ');
                 const floorAddress = [entranceAddress, address.floor].join(', ');
                 const flatAddress = [floorAddress, address.flat].join(', ');

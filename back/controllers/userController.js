@@ -136,12 +136,17 @@ class UserController {
                 }
 
                 if (oldUser.is_at_home != newUser.is_at_home && typeof(newUser.is_at_home) === Boolean) {
-                    newUser.is_at_home = newUser.is_at_home;
                     newUser.last_status_change = new Date();
+                }
+                else {
+                    newUser.is_at_home = oldUser.is_at_home;
+                    newUser.last_status_change = oldUser.last_status_change;
                 }
 
                 const updatedUser = await User.findByIdAndUpdate(user._id, { 
                     fullname: newUser.fullname,
+                    is_at_home: newUser.is_at_home,
+                    last_status_change: newUser.last_status_change,
                     ...newUser.address
                 }).exec();
     

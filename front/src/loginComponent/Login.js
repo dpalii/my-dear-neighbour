@@ -9,12 +9,20 @@ import {
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { useContext } from 'react';
+import { AppContext } from '../appContext';
+import LanguageSwitch from '../languageSwitchComponent/LanguageSwitch';
+import { useTranslation } from 'react-i18next';
+import config from '../config';
 
 function Login(props) {
-    const url = 'http://localhost:8080/api/auth';
+    const url = `${config.API_URL}/auth`;
     const phoneRegEx = new RegExp(/^\+[0-9]{10,12}$/);
 
+    const { t } = useTranslation();
     const history = useHistory();
+    const context = useContext(AppContext);
+
     const [ formData, setFormData ] = useState({
         phone: '',
         password: ''
@@ -26,16 +34,12 @@ function Login(props) {
 
         let err = '';
 
-        if (!formData.phone) {
-            err = 'Enter phone';
-        }
-        else
         if (!phoneRegEx.test(formData.phone)) {
-            err = 'Phone is invalid';
+            err = t('auth.error.phone');
         }
         else
         if (!formData.password) {
-            err = 'Enter password';
+            err = t('auth.error.password');
         }
         else {
             try {
@@ -53,17 +57,17 @@ function Login(props) {
                 const data = await response.json();
 
                 if (response.ok) {
-                    props.authCallback(data.jwt_token);
+                    context.setToken(data.jwt_token);
                     history.push('/groups');
                 }
                 else {
-                    err = data.message;
+                    err = t('auth.error.wrongCredentials');
                 }
 
             }
             catch(e) {
                 console.log(e);
-                err = 'Request failed, try again';
+                err = t('auth.error.login');
             }
         } 
         
@@ -72,13 +76,13 @@ function Login(props) {
 
     return (
         <div className="auth">
-            <Typography variant="h5">Sign in</Typography>
+            <Typography variant="h5">{t('auth.login')}</Typography>
             <form>
                 <TextField 
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    label="Phone number:"
+                    label={t('auth.phone')}
                     autoFocus
                     type="text" 
                     value={formData.phone} 
@@ -95,7 +99,7 @@ function Login(props) {
                     variant="outlined"
                     margin="normal"
                     fullWidth
-                    label="Password:"
+                    label={t('auth.password')}
                     type="password" 
                     value={formData.password} 
                     onChange={
@@ -109,12 +113,13 @@ function Login(props) {
                 />
                 <Typography color="error">{ error }</Typography>
                 <Button color="primary" variant="contained" onClick={loginHandler} type="submit">
-                    Submit
+                    {t('auth.login')}
                 </Button>
             </form>
             <Link to="/register">
-                Don't have an account?
+                {t('auth.registerLink')}
             </Link>
+            <LanguageSwitch />
         </div>
     );
 }

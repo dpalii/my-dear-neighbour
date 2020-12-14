@@ -87,6 +87,23 @@ class GroupUserController {
         }
     }
 
+    static async getGroupUserMe(req, res) {
+        const groupId = req.params.groupId;
+        const userId = req.user._id;
+
+        try {
+            const user = await GroupUser.findOne({group: groupId, user: userId})
+                .populate('user')
+                .populate('group')
+                .exec();
+            res.status(200).json({'user': user});
+        }
+        catch(e) {
+            console.log(e);
+            res.status(500).json({message: 'Server error'});
+        }
+    }
+
     static async updateUserAccess(req, res) {
         const groupId = req.params.groupId;
         const userId = req.params.userId;

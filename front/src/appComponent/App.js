@@ -1,6 +1,8 @@
 import './App.scss';
 import Login from '../loginComponent/Login';
 import Register from '../registerComponent/Register';
+import Content from '../contentComponent/Content';
+import { AppContext } from '../appContext';
 
 import React, { useState } from 'react'; 
 import { 
@@ -10,8 +12,9 @@ import {
   Route
 } from 'react-router-dom';
 
-function App() {
+function App(props) {
   const [ token, setToken ] = useState(localStorage.getItem('jwt'));
+  const [ lang, setLang ] = useState('en');
 
   const authCallback = (jwt) => {
     setToken(jwt);
@@ -19,30 +22,33 @@ function App() {
   }
 
   return (
-    <Router>
-      <Switch>
-        <Route
-          exact
-          path="/"
-          render={() => {
-              return (
-                token ?
-                <Redirect to="/groups" /> :
-                <Redirect to="/login" /> 
-              )
-          }}
-        />
-        <Route exact path="/login" >
-          <Login authCallback={authCallback}/>
-        </Route>
-        <Route exact path="/register">
-          <Register/>
-        </Route>
-        <Route exact path="/groups">
-          
-        </Route>
-      </Switch>
-    </Router>
+    <AppContext.Provider value={{
+      lang: lang,
+      token: token,
+      setToken: authCallback,
+      setLang: setLang
+    }}>
+      <Router>
+        <Switch>
+          <Route exact path="/login" >
+            <Login/>
+          </Route>
+          <Route exact path="/register">
+            <Register/>
+          </Route>
+          <Route
+            path="/"
+            render={() => {
+                return (
+                  token ?
+                  <Content /> :
+                  <Redirect to="/login" /> 
+                )
+            }}
+          />
+        </Switch>
+      </Router>
+    </AppContext.Provider>
   );
 }
 

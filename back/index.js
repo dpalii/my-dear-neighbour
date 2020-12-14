@@ -15,7 +15,7 @@ const voteRouter = require('./routes/voteRouter');
 const { dirname } = require('path');
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 const mongourl = process.env.MONGOURL;
 
 const mongoOptions = {
@@ -32,7 +32,7 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
 app.use(express.json());
@@ -54,5 +54,5 @@ const credentials = { key: privateKey, cert: certificate };
 const httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(port, () => {
-    console.log("Server is listening");
+    console.log("Server is listening on port " + port);
 });

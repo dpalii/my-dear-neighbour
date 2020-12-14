@@ -11,10 +11,14 @@ import {
     TextField,
     Typography
 } from '@material-ui/core';
+import LanguageSwitch from '../languageSwitchComponent/LanguageSwitch';
+import { useTranslation } from 'react-i18next';
+import config from '../config';
 
 function Register(props) {
-    const url = 'http://localhost:8080/api/auth';
+    const url = `${config.API_URL}/auth`;
 
+    const { t } = useTranslation();
     const history = useHistory();
     const [ formData, setFormData ] = useState({
         phone: '',
@@ -35,6 +39,7 @@ function Register(props) {
 
     const registerHandler = async (e) => {
         e.preventDefault();
+        setError('');
         
         const nameRegEx = new RegExp(/^[а-яА-ЯёЁіїІЇєЄ0-9a-zA-Z\-\s]+$/);
         const phoneRegEx = new RegExp(/^\+[0-9]{10,12}$/);
@@ -46,30 +51,28 @@ function Register(props) {
             const { phone, fullname, password, repeatedPassword, address } = formData;
             
             if (!phone || !phoneRegEx.test(phone)) {
-                err = "Invalid phone";
+                err = t('auth.error.phone');
                 setError(err);
                 return;
             }
     
             if (!fullname || !nameRegEx.test(fullname)) {
-                err = "Invalid name";
+                err = t('auth.error.fullname');
                 setError(err);
                 return;
             }
 
             if (!password) {
-                err = "Password not specified";
+                err = t('auth.error.password');
                 setError(err);
                 return;
             }
 
             if (password !== repeatedPassword) {
-                err = "Passwords do not match";
+                err = t('auth.error.repeatPassword');
                 setError(err);
                 return;
             }
-
-            console.log(address);
 
             if (!address || 
                 !address.country || !nameRegEx.test(address.country) ||
@@ -79,7 +82,7 @@ function Register(props) {
                 !address.entrance || !numberRegEx.test(address.entrance) || 
                 !address.floor || !numberRegEx.test(address.floor) || 
                 !address.flat || !numberRegEx.test(address.flat)) {
-                err = "Invalid address";
+                err = t('auth.error.address');
                 setError(err);
                 return;
             }
@@ -98,34 +101,33 @@ function Register(props) {
                 },
                 body: JSON.stringify(formData)
             });
-            const data = await response.json();
 
             if (response.ok) {
                 history.push('/login');
             }
             else {
-                err = data.message;
+                err = t('auth.error.phoneNotUnique');
                 setError(err);
             }
         }
         catch(e) {
             console.log(e);
-            err = 'Request failed, try again';
+            err = t('auth.error.register');
             setError(err);
         } 
     }
 
     return (
         <div className="register">
-            <Typography variant="h5">Sign up</Typography>
+            <Typography variant="h5">{t('auth.register')}</Typography>
             <form className="register-form">
                 <div className="form-group">
-                    <Typography variant="h6">Credentials:</Typography>
+                    <Typography variant="h6">{t('auth.credentials')}</Typography>
                     <TextField 
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Phone number:"
+                        label={t('auth.phone')}
                         autoFocus
                         type="text" 
                         value={formData.phone} 
@@ -142,7 +144,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Full name:"
+                        label={t('auth.fullname')}
                         type="text" 
                         value={formData.fullname} 
                         onChange={
@@ -158,7 +160,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Password:"
+                        label={t('auth.password')}
                         type="password" 
                         value={formData.password} 
                         onChange={
@@ -174,7 +176,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Repeat password:"
+                        label={t('auth.repeatPassword')}
                         type="password" 
                         value={formData.repeatedPassword} 
                         onChange={
@@ -188,12 +190,12 @@ function Register(props) {
                     />
                 </div>
                 <div className="form-group">
-                    <Typography variant="h6">Address:</Typography>
+                    <Typography variant="h6">{t('auth.address')}</Typography>
                     <TextField 
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Country:"
+                        label={t('auth.country')}
                         type="text" 
                         value={formData.address.country} 
                         onChange={
@@ -212,7 +214,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="City:"
+                        label={t('auth.city')}
                         type="text" 
                         value={formData.address.city} 
                         onChange={
@@ -231,7 +233,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Street:"
+                        label={t('auth.street')}
                         type="text" 
                         value={formData.address.street} 
                         onChange={
@@ -250,7 +252,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="House number:"
+                        label={t('auth.houseNumber')}
                         type="number" 
                         value={formData.address.houseNumber} 
                         onChange={
@@ -269,7 +271,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Entrance:"
+                        label={t('auth.entrance')}
                         type="number" 
                         value={formData.address.entrance} 
                         onChange={
@@ -288,7 +290,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Floor:"
+                        label={t('auth.floor')}
                         type="number" 
                         value={formData.address.floor} 
                         onChange={
@@ -307,7 +309,7 @@ function Register(props) {
                         variant="outlined"
                         margin="normal"
                         fullWidth
-                        label="Flat:"
+                        label={t('auth.flat')}
                         type="number" 
                         value={formData.address.flat} 
                         onChange={
@@ -326,12 +328,13 @@ function Register(props) {
                 
                 <Typography id="error" color="error">{ error }</Typography>
                 <Button color="primary" variant="contained" onClick={registerHandler} type="submit">
-                    Submit
+                    {t('auth.register')}
                 </Button>
             </form>
             <Link to='/login'>
-                Already have an account?
+                {t('auth.loginLink')}
             </Link>
+            <LanguageSwitch />
         </div>
     );
 }

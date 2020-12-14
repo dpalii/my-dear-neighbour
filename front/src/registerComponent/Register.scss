@@ -1,4 +1,6 @@
 .register {
+    align-self: center;
+    margin: auto;
     background-color: white;
     box-shadow: 0 0 10px rgba(0,0,0,0.25);
     padding: 30px;
@@ -6,7 +8,7 @@
 
     a {
         display: block;
-        margin-top: 10px;
+        margin: 10px 0;
     }
 
     button {

@@ -1,0 +1,22 @@
+.menu {
+    padding: 24px;
+    width: 400px;
+    background-color: limegreen;
+    overflow-y: auto;
+}
+
+.main { 
+    flex: 1;
+}
+
+.logo {
+    height: 50px;
+    margin-right: auto;
+}
+
+.logo-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 24px;
+}

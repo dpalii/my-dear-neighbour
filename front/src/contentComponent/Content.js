@@ -7,9 +7,12 @@ import {
 import MyGroups from '../myGroupsComponent/MyGroups';
 import Profile from '../profileComponent/Profile';
 import LanguageSwitch from '../languageSwitchComponent/LanguageSwitch';
-import Group from '../groupComponent/Group'
-import logo from '../logo.svg';
+import Group from '../groupComponent/Group';
+import GroupPlaceholder from '../groupPlaceholderComponent/GroupPlaceholder';
+import Post from '../postComponent/Post';
+import logo from '../assets/logo.svg';
 import { Divider } from '@material-ui/core';
+import CreatePost from '../createPostComponent/CreatePost';
 
 
 function Content(props) {
@@ -26,6 +29,18 @@ function Content(props) {
             </nav>
             <main className="main">
                 <Switch>
+                    <Route exact path="/groups">
+                        <GroupPlaceholder />
+                    </Route>
+                    <Route path="/groups/:groupId/posts/:postId">
+                        <Post />
+                    </Route>
+                    <Route path="/groups/:groupId/users/:userId">
+                        Hello
+                    </Route>
+                    <Route path="/groups/:id/new-post">
+                        <CreatePost />
+                    </Route>
                     <Route path="/groups/:id">
                         <Group />
                     </Route>

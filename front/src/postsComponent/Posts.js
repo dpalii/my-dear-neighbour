@@ -1,11 +1,10 @@
 import './Posts.scss';
-import { Link as RouterLink, BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, useHistory } from 'react-router-dom';
 import { useState, useContext, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardActions from '@material-ui/core/CardActions';
 import Avatar from '@material-ui/core/Avatar';
 import { AppContext } from '../appContext';
 import config from '../config';
@@ -15,6 +14,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -23,6 +23,13 @@ const useStyles = makeStyles({
     },
     cardRoot: {
         'margin-bottom': '24px'
+    },
+    linkRoot: {
+        'cursor': 'pointer'
+    },
+    avatarRoot: {
+        'text-decoration': 'none',
+        'cursor': 'pointer'
     }
 });
 
@@ -30,6 +37,7 @@ function Posts(props) {
     const id = props.id;
     const url = config.API_URL;
     const context = useContext(AppContext);
+    const history = useHistory();
     const styles = useStyles();
     const [posts, setPosts] = useState([]);
     const [groupUser, setGroupUser] = useState({});
@@ -111,11 +119,12 @@ function Posts(props) {
                     ) : ''
                 }
                 {
-                    !unapproved || groupUser.is_admin ? (
+                    !unapproved && groupUser.is_admin ? (
                         <Button
                             display="block"
                             variant="contained"
                             startIcon={<AddIcon />}
+                            onClick={() => history.push(`${id}/new-post`)}
                         >
                             Create post
                         </Button>
@@ -124,7 +133,6 @@ function Posts(props) {
                 <div className="filler"></div>
                 <IconButton 
                     classes={{root: "refresh-btn"}}
-                    color="primary" 
                     aria-label="upload picture" 
                     component="span"
                     onClick={() => initiateUpdate({})}
@@ -138,19 +146,33 @@ function Posts(props) {
                     posts.map(post => (
                         <Card classes={{root: styles.cardRoot}} key={post._id}>
                             <CardHeader
-                                avatar={<RouterLink className="avatar-link" to={`/groups/${post.group._id}/users/${post.creator._id}`}>
-                                    <Avatar aria-label="creator">
-                                        {post.creator.fullname.slice(0, 1) || null}
-                                    </Avatar>
-                                </RouterLink>
+                                avatar={<Link
+                                        underline="none"
+                                        classes={{root: styles.avatarRoot}}
+                                        title={post.creator.fullname}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            history.push(`/groups/${post.group._id}/users/${post.creator._id}`);
+                                        }}
+                                    >
+                                        <Avatar aria-label="creator">
+                                            {post.creator.fullname.slice(0, 1) || null}
+                                        </Avatar>
+                                    </Link>
                                 }
-                                title={<RouterLink to={`/groups/${post.group._id}/posts/${post._id}`}>
-                                        {post.title}
-                                    </RouterLink>}
+                                title={<Link
+                                    classes={{root: styles.linkRoot}}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        history.push(`/groups/${post.group._id}/posts/${post._id}`);
+                                    }}
+                                >
+                                    {post.title}
+                                </Link>}
                                 subheader={(new Date(post.created_date)).toLocaleDateString(context.lang)}
                             />
                             <CardContent>
-                                <Typography variant="body2" component="p">
+                                <Typography gutterBottom variant="body2" component="p">
                                     {post.content}
                                 </Typography>
                                 {post.is_poll ? (
@@ -161,16 +183,9 @@ function Posts(props) {
                                     </div>
                                 ) : ''}                              
                             </CardContent>
-                            <CardActions>
-                                <Typography variant="caption" color="textSecondary" component="p">
-                                    Posted by <RouterLink to={`/groups/${post.group._id}/users/${post.creator._id}`}>
-                                        {post.creator.fullname}
-                                    </RouterLink>
-                                </Typography>   
-                            </CardActions>
                         </Card>
                     )) : (
-                        <Typography variant="h5" align="center" color="secondary">
+                        <Typography variant="h5" align="center" color="textSecondary">
                             No posts here yet
                         </Typography>  
                     )

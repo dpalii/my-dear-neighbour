@@ -7,5 +7,6 @@ const checkGroupUser = require('../middlewares/checkGroupUser');
 const router = express.Router();
 
 router.post('/groups/:groupId/posts/:postId/vote', authorize, checkGroupUser, voteController.createVote);
+router.get('/groups/:groupId/posts/:postId/vote', authorize, checkGroupUser, voteController.getVote);
 
 module.exports = router;

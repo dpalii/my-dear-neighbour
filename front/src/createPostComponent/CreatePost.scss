@@ -1,0 +1,25 @@
+.form-wrapper {
+    padding: 24px;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.post-form {
+    max-width: 600px;
+}
+
+.poll-options {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.poll-controls {
+    display: flex;
+    flex-direction: row;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    color: #f44336;
+}

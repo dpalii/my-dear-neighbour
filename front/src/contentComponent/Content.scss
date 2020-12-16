@@ -1,12 +1,14 @@
 .menu {
     padding: 24px;
     width: 400px;
-    background-color: limegreen;
+    background-color: rgb(42, 165, 42);
     overflow-y: auto;
 }
 
 .main { 
     flex: 1;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .logo {

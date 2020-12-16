@@ -31,7 +31,7 @@ app.use(function (req, res, next) {
 });
 app.use(function (req, res, next) {
     res.set('Access-Control-Allow-Origin', '*');
-    res.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.set('Access-Control-Allow-Methods', 'GET, OPTIONS, PUT, POST, PATCH, DELETE');
     res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });

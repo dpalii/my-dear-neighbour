@@ -123,6 +123,7 @@ class PostController {
             })
                 .populate('creator')
                 .populate('group')
+                .sort({created_date: 'desc'})
                 .exec();
             res.status(200).json({'posts': posts});
         }
@@ -135,9 +136,10 @@ class PostController {
     static async getGroupPostById(req, res) {
         const groupId = req.params.groupId;
         const postId = req.params.postId;
+        const groupUser = req.groupUser;
 
         try {
-            const [post, votes] = await Promise.all([
+            const [postDoc, votes] = await Promise.all([
                 Post.findOne({
                     group: groupId, 
                     _id: postId
@@ -147,16 +149,25 @@ class PostController {
                     .exec(),
                 Vote.find({post: postId}).exec()
             ]);
-            if (!post.confirmed && !user.is_admin) {
+            const post = postDoc.toObject();
+
+            if (!post.confirmed && !groupUser.is_admin) {
                 res.status(403).json({message: "You can't view this post"});
                 return;
             }
+
+            let options = [];
             if (post.is_poll) {
-                for (let option of post.options) {
-                    option.votes = votes.filter(vote => vote.option == option.name).length;
-                }
+                options = post.options.map(option => ({
+                    ...option,
+                    votes: votes.filter(x => x.option === option.name).length,
+                    total: votes.length
+                }));
             }
-            res.status(200).json({post: post});
+            res.status(200).json({post: {
+                ...post,
+                options: options
+            }});
         }
         catch(e) {
             console.log(e);
@@ -173,6 +184,7 @@ class PostController {
                 group: groupId,
                 _id: postId
             }, {
+                created_date: new Date(),
                 confirmed: true
             }).exec();
             res.status(200).json({message: 'Success'});

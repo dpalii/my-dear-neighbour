@@ -39,7 +39,7 @@ const postSchema = new Schema({
         unique: false,
         required: true
     },
-    poll_options: [
+    options: [
         {
             name: {
                 type: String,

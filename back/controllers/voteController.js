@@ -8,6 +8,8 @@ class VoteController {
         const user = req.user;
         const postId = req.params.postId;
 
+        console.log(req.body);
+
         if (!option) {
             res.status(400).json({message: "Option is not provided"});
             return;
@@ -25,13 +27,30 @@ class VoteController {
 
             const newVote = new Vote({
                 user: user._id,
-                group: groupId,
+                post: postId,
                 option: option
             });
 
             await newVote.save();
 
             res.status(200).json({message: 'Success'});
+        }
+        catch(e) {
+            console.log(e);
+            res.status(500).json({message: 'Server error'});
+        }
+    }
+
+    static async getVote(req, res) {
+        const user = req.user;
+        const postId = req.params.postId;
+
+        try {
+            const vote = await Vote.findOne({
+                user: user._id,
+                post: postId
+            })
+            res.status(200).json({vote: vote});
         }
         catch(e) {
             console.log(e);

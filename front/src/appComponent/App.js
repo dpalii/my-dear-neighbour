@@ -14,7 +14,7 @@ import {
 
 function App(props) {
   const [ token, setToken ] = useState(localStorage.getItem('jwt'));
-  const [ lang, setLang ] = useState('en');
+  const [ lang, setLang ] = useState('uk');
 
   const authCallback = (jwt) => {
     setToken(jwt);

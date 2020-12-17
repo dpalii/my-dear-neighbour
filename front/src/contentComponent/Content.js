@@ -13,6 +13,8 @@ import Post from '../postComponent/Post';
 import logo from '../assets/logo.svg';
 import { Divider } from '@material-ui/core';
 import CreatePost from '../createPostComponent/CreatePost';
+import Users from '../usersComponent/Users';
+import User from '../userComponent/User';
 
 
 function Content(props) {
@@ -36,7 +38,10 @@ function Content(props) {
                         <Post />
                     </Route>
                     <Route path="/groups/:groupId/users/:userId">
-                        Hello
+                        <User />
+                    </Route>
+                    <Route path="/groups/:id/users">
+                        <Users />
                     </Route>
                     <Route path="/groups/:id/new-post">
                         <CreatePost />

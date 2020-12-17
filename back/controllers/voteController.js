@@ -8,8 +8,6 @@ class VoteController {
         const user = req.user;
         const postId = req.params.postId;
 
-        console.log(req.body);
-
         if (!option) {
             res.status(400).json({message: "Option is not provided"});
             return;
@@ -51,6 +49,24 @@ class VoteController {
                 post: postId
             })
             res.status(200).json({vote: vote});
+        }
+        catch(e) {
+            console.log(e);
+            res.status(500).json({message: 'Server error'});
+        }
+    }
+
+    static async deleteVote(req, res) {
+        const user = req.user;
+        const postId = req.params.postId;
+
+        try {
+            const vote = await Vote.findOneAndDelete({
+                user: user._id,
+                post: postId
+            });
+
+            res.status(200).json({message: 'Success'});
         }
         catch(e) {
             console.log(e);

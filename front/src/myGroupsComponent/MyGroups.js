@@ -16,6 +16,7 @@ import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Accordion = withStyles({
     root: {
@@ -59,15 +60,17 @@ const AccordionDetails = withStyles((theme) => ({
     },
 }))(MuiAccordionDetails);
   
+
 const prefixes = [
-    '',
-    '',
-    'Entrance ',
-    'Floor ',
-    'Flat '
+    'street',
+    'house',
+    'entrance',
+    'floor',
+    'flat'
 ];
 
 function MyGroups(props) {
+    const { t } = useTranslation();
     const url = config.API_URL;
     const history = useHistory();
     const [groups, setGroups] = useState([]);
@@ -174,7 +177,7 @@ function MyGroups(props) {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                    <Typography variant="h5">My groups</Typography>
+                    <Typography variant="h5">{t('group.myGroups.title')}</Typography>
                 </AccordionSummary>    
                 <AccordionDetails>
                     <List classes={{root: 'groups'}}>
@@ -183,19 +186,19 @@ function MyGroups(props) {
                             groups.map(item => {
                                 const name = item.group.name.split(', ')
                                     .slice(2)
-                                    .map((address, i) => prefixes[i] + address)
+                                    .map((address, i) => `${t(`group.${prefixes[i]}`)} ${address}`)
                                     .join(', ');
 
                                 return (
                                     <ListItem key={item._id}>
                                         <ListItemText
                                             primary={name}
-                                            secondary={!item.confirmed ? "Pending request" : (
-                                                item.is_admin ? "Administrator" : "Member"
+                                            secondary={!item.confirmed ? t('user.pending') : (
+                                                item.is_admin ? t('user.admin') : t('user.member')
                                             )}
                                         />
                                         <ListItemSecondaryAction>
-                                            <IconButton onClick={() => goToGroup(item.group._id)} disabled={!item.confirmed} edge="end" aria-label="leave group" title="Go to group">
+                                            <IconButton onClick={() => goToGroup(item.group._id)} disabled={!item.confirmed} edge="end" aria-label="Go to group" title={t('group.goto')}>
                                                 <ArrowForward />
                                             </IconButton>
                                         </ListItemSecondaryAction>
@@ -204,7 +207,7 @@ function MyGroups(props) {
                             }) : (
                                 <ListItem>
                                     <ListItemText
-                                        primary="You haven't joined any groups yet"
+                                        primary={t('group.myGroups.empty')}
                                     />
                                 </ListItem>
                             )
@@ -218,7 +221,7 @@ function MyGroups(props) {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                 >
-                    <Typography variant="h5">Available groups</Typography>
+                    <Typography variant="h5">{t('group.available.title')}</Typography>
                 </AccordionSummary>    
                 <AccordionDetails>
                     <List classes={{root: 'groups'}}>
@@ -227,7 +230,7 @@ function MyGroups(props) {
                             availableGroups.map(item => {
                                 const name = item.name.split(', ')
                                     .slice(2)
-                                    .map((address, i) => prefixes[i] + address)
+                                    .map((address, i) => `${t(`group.${prefixes[i]}`)} ${address}`)
                                     .join(', ');
                                 return (
                                     <ListItem key={item._id}>
@@ -235,7 +238,7 @@ function MyGroups(props) {
                                             primary={name}
                                         />
                                         <ListItemSecondaryAction>
-                                            <IconButton onClick={() => joinGroup(item._id)} edge="end" aria-label="leave group" title="Join group">
+                                            <IconButton onClick={() => joinGroup(item._id)} edge="end" aria-label="join group" title={t('group.join')}>
                                                 <Add />
                                             </IconButton>
                                         </ListItemSecondaryAction>
@@ -244,7 +247,7 @@ function MyGroups(props) {
                             }) : (
                                 <ListItem>
                                     <ListItemText
-                                        primary="You have no available groups right now"
+                                        primary={t('group.available.empty')}
                                     />
                                 </ListItem>
                             )

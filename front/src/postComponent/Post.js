@@ -12,11 +12,13 @@ import Avatar from '@material-ui/core/Avatar';
 import { AppContext } from '../appContext';
 import config from '../config';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PollIcon from '@material-ui/icons/Poll';
 import Button from '@material-ui/core/Button';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
+import { useTranslation } from 'react-i18next';
 
 
 const useStyles = makeStyles({
@@ -45,11 +47,13 @@ const useStyles = makeStyles({
 });
 
 function Post(props) {
+    const { t } = useTranslation();
     const url = config.API_URL;
     const styles = useStyles();
     const history = useHistory();
     const [post, setPost] = useState({});
     const [vote, setVote] = useState(null);
+    const [groupUser, setGroupUser] = useState({});
     const [update, initiateUpdate] = useState({});
     const context = useContext(AppContext);
     const { groupId, postId } = useParams();
@@ -71,7 +75,31 @@ function Post(props) {
             const data = await response.json();
 
             if (response.ok) {
-                initiateUpdate();
+                initiateUpdate({});
+            }
+            else {
+                console.log(data.message);
+            }
+        }
+        catch(error) {
+            console.log(error)
+        }
+    } 
+
+    const handleRevert = async () => {
+        try {
+            const response = await fetch(`${url}/groups/${groupId}/posts/${postId}/vote`, {
+                method: 'DELETE',
+                mode: 'cors',
+                headers: {
+                    "Authorization": `Bearer ${context.token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                initiateUpdate({});
             }
             else {
                 console.log(data.message);
@@ -129,6 +157,35 @@ function Post(props) {
             console.log(error)
         }
     } 
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const response = await fetch(`${url}/groups/${groupId}/users/me`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                        "Authorization": `Bearer ${context.token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    const user = data.user;
+                    setGroupUser(user);
+                }
+                else {
+                    console.log(data.message);
+                }
+            }
+            catch(error) {
+                console.log(error)
+            }
+        }
+
+        getUser();
+    }, [url, context, groupId]);
 
     useEffect(() => {
         const getGroups = async () => {
@@ -222,7 +279,12 @@ function Post(props) {
                                     disabled={vote ? true : false}
                                     onClick={() => handleVote(option.name)}
                                 >
-                                    <Typography variant="body2">{option.name}</Typography>
+                                    <Box display="flex" alignItems="center">
+                                        <Typography variant="body2">
+                                            {option.name}
+                                        </Typography>
+                                        {vote && vote.option === option.name ? <CheckCircleIcon /> : ''}
+                                    </Box>
                                     <Box display="flex" alignItems="center">
                                         <Box width="100%" mr={1}>
                                             <LinearProgress variant="determinate" value={option.votes && (option.votes / option.total * 100)} />
@@ -238,7 +300,7 @@ function Post(props) {
                         </CardContent>
                         <CardActions>
                             {
-                                !post.confirmed ? (
+                                !post.confirmed && groupUser.is_admin ? (
                                     <Box>
                                         <Button
                                             startIcon={<CheckCircleIcon />}
@@ -246,23 +308,37 @@ function Post(props) {
                                             color="primary"
                                             onClick={handleApprove}
                                         >   
-                                            Approve
+                                            {t('action.approve')}
                                         </Button>
                                     </Box>) : ''
                             }
-                            <Box>
-                                <Button
-                                    startIcon={<DeleteIcon />}
-                                    variant="text"
-                                    color="secondary"
-                                    onClick={handleDelete}
-                                >   
-                                    Delete
-                                </Button>
-                            </Box>
-                            <Button>
-                                
-                            </Button>
+                            {
+                                post.creator._id === groupUser.user._id || groupUser.is_admin ? (
+                                    <Box>
+                                        <Button
+                                            startIcon={<DeleteIcon />}
+                                            variant="text"
+                                            color="secondary"
+                                            onClick={handleDelete}
+                                        >   
+                                            {t('action.delete')}
+                                        </Button>
+                                    </Box>
+                                ) : ''
+                            }
+                            {
+                                post.is_poll && vote ? (
+                                    <Box>
+                                        <Button
+                                            startIcon={<PollIcon />}
+                                            variant="text"
+                                            color="primary"
+                                            onClick={handleRevert}
+                                        >   
+                                            {t('action.revertVote')}
+                                        </Button>
+                                    </Box>) : ''
+                            }
                         </CardActions>
                     </>
                 ) : (

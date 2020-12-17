@@ -24,7 +24,7 @@ function LanguageSwitch(props) {
           inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem value="en">EN</MenuItem>
-          <MenuItem value="ua">УКР</MenuItem>
+          <MenuItem value="uk">УКР</MenuItem>
         </Select>
     );
 }

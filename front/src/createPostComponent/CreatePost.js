@@ -15,6 +15,7 @@ import { Divider } from '@material-ui/core';
 import { useHistory, useParams } from 'react-router-dom';
 import config from '../config';
 import { AppContext } from '../appContext';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
     root: {
@@ -24,6 +25,7 @@ const useStyles = makeStyles({
 });
 
 function CreatePost(props) {
+    const { t } = useTranslation();
     const styles = useStyles();
     const { id } = useParams();
     const url = config.API_URL;
@@ -40,16 +42,16 @@ function CreatePost(props) {
     const handleSubmit = async () => {
         let err = '';
         if (!formData.title) {
-            err = 'Enter post title';
+            err = t('createPost.error.title');
         } 
         else if (!formData.content) {
-            err = 'Enter post content';
+            err = t('createPost.error.content');
         } 
         else if (formData.is_poll && formData.options.length < 2) {
-            err = 'Making a poll requires at least 2 options';
+            err = t('createPost.error.poll.length');
         } 
         else if (formData.is_poll && formData.options.find(x => !x.name)) {
-            err = 'Not all poll options have names';
+            err = t('createPost.error.poll.names');
         } 
         else {
             try {
@@ -73,12 +75,12 @@ function CreatePost(props) {
                 }
                 else {
                     console.log(data.message);
-                    err = 'Invalid data provided';
+                    err = t('createPost.error.http.client');
                 }
             }
             catch(error) {
                 console.log(error)
-                err = 'Server error';
+                err = t('createPost.error.http.server');
             }
         }
 
@@ -88,12 +90,12 @@ function CreatePost(props) {
     return (
         <div className="form-wrapper">
             <form className="post-form">
-                <Typography gutterBottom variant="h5">New post</Typography>
+                <Typography gutterBottom variant="h5">{t('createPost.title')}</Typography>
                 <Divider />
                 <TextField 
                     margin="normal"
                     fullWidth
-                    label="Title"
+                    label={t('createPost.form.title')}
                     autoFocus
                     type="text" 
                     value={formData.title} 
@@ -109,7 +111,7 @@ function CreatePost(props) {
                 <TextField 
                     margin="normal"
                     fullWidth
-                    label="Post content"
+                    label={t('createPost.form.content')}
                     type="text" 
                     value={formData.content} 
                     multiline
@@ -138,7 +140,7 @@ function CreatePost(props) {
                         color="primary"
                         />
                     }
-                    label="Is poll?"
+                    label={t('createPost.form.isPoll')}
                     />
                     <Button
                         disabled={!formData.is_poll || formData.options.length >= 10}
@@ -159,7 +161,7 @@ function CreatePost(props) {
                             }
                         }}
                     >
-                        Add option
+                        {t('createPost.form.addOption')}
                     </Button>
                 </div>
                 {formData.is_poll ? (
@@ -168,7 +170,7 @@ function CreatePost(props) {
                             <TextField key={option.id}
                                 margin="normal"
                                 fullWidth
-                                label={`Option ${option.id}`}
+                                label={`${t('createPost.form.pollOption')} ${option.id}`}
                                 type="text" 
                                 value={option.name} 
                                 InputProps={{
@@ -224,7 +226,7 @@ function CreatePost(props) {
                     color="primary"
                     onClick={handleSubmit}
                 >
-                    Submit post
+                    {t('createPost.form.submit')}
                 </Button>
             </form>
         </div>

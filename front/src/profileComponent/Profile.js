@@ -6,8 +6,10 @@ import { AppContext } from '../appContext';
 import config from '../config';
 import { Button, ButtonGroup, Divider, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function Content(props) {
+    const { t } = useTranslation();
     const url = config.API_URL;
     const [user, setUser] = useState({});
     const context = useContext(AppContext);
@@ -58,8 +60,8 @@ function Content(props) {
                         <Avatar>{user.fullname.slice(0, 1) || null}</Avatar>
                         <Typography noWrap display="block" classes={{root: "username"}} variant="h5">{user.fullname}</Typography>
                         <ButtonGroup disableElevation size="small" classes={{root: 'controls'}}>
-                            <Button onClick={handleEdit} variant="contained" color="default">Edit</Button>
-                            <Button onClick={handleLogout} variant="contained" color="secondary">Logout</Button>
+                            {/* <Button onClick={handleEdit} variant="contained" color="default">Edit</Button> */}
+                            <Button onClick={handleLogout} variant="contained" color="secondary">{t('profile.logout')}</Button>
                         </ButtonGroup>
                     </div>
                 ) : (

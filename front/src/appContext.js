@@ -1,7 +1,7 @@
 import React from "react";
 
 export const AppContext = React.createContext({
-    lang: 'en',
+    lang: 'uk',
     token: '',
     setToken: (jwt) => {},
     setLang: (lang) => {}

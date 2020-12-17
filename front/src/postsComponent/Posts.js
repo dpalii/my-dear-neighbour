@@ -13,9 +13,11 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
+import PeopleIcon from '@material-ui/icons/People';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
     btnRoot: {
@@ -34,6 +36,7 @@ const useStyles = makeStyles({
 });
 
 function Posts(props) {
+    const { t } = useTranslation();
     const id = props.id;
     const url = config.API_URL;
     const context = useContext(AppContext);
@@ -105,6 +108,15 @@ function Posts(props) {
     return (
         <Router>
             <div className="post-list-controls">
+                <Button 
+                    classes={{root: styles.btnRoot}}
+                    display="block"
+                    variant="contained"
+                    startIcon={<PeopleIcon />}
+                    onClick={() => history.push(`${id}/users`)}
+                >
+                    {t('posts.members')}
+                </Button>
                 {
                     groupUser && groupUser.is_admin ? (
                         <Button 
@@ -114,7 +126,7 @@ function Posts(props) {
                             startIcon={<CheckCircleIcon />}
                             onClick={() => setUnapproved(!unapproved)}
                         >
-                            {!unapproved ? "Unapproved posts" : "Approved posts"}
+                            {!unapproved ? t('posts.unapproved') : t('posts.approved')}
                         </Button>
                     ) : ''
                 }
@@ -126,7 +138,7 @@ function Posts(props) {
                             startIcon={<AddIcon />}
                             onClick={() => history.push(`${id}/new-post`)}
                         >
-                            Create post
+                            {t('posts.create')}
                         </Button>
                     ) : ''
                 }
@@ -178,7 +190,7 @@ function Posts(props) {
                                 {post.is_poll ? (
                                     <div className="poll-marker">
                                         <PollIcon color="disabled"/> <Typography variant="caption" color="textSecondary" component="p">
-                                            Has a poll
+                                            {t('posts.hasPoll')}
                                         </Typography>
                                     </div>
                                 ) : ''}                              
@@ -186,7 +198,7 @@ function Posts(props) {
                         </Card>
                     )) : (
                         <Typography variant="h5" align="center" color="textSecondary">
-                            No posts here yet
+                            {t('posts.empty')}
                         </Typography>  
                     )
                 }

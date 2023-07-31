@@ -61,7 +61,7 @@ function Content(props) {
                         <Typography noWrap display="block" classes={{root: "username"}} variant="h5">{user.fullname}</Typography>
                         <ButtonGroup disableElevation size="small" classes={{root: 'controls'}}>
                             {/* <Button onClick={handleEdit} variant="contained" color="default">Edit</Button> */}
-                            <Button onClick={handleLogout} variant="contained" color="secondary">{t('profile.logout')}</Button>
+                            <Button onClick={handleLogout} variant="outlined" style={{color: '#000', borderColor: '#000'}}>{t('profile.logout')}</Button>
                         </ButtonGroup>
                     </div>
                 ) : (

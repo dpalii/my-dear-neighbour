@@ -10,8 +10,8 @@ import LanguageSwitch from '../languageSwitchComponent/LanguageSwitch';
 import Group from '../groupComponent/Group';
 import GroupPlaceholder from '../groupPlaceholderComponent/GroupPlaceholder';
 import Post from '../postComponent/Post';
-import logo from '../assets/logo.svg';
-import { Divider } from '@material-ui/core';
+import logo from '../assets/logo.png';
+import { Divider, Typography } from '@material-ui/core';
 import CreatePost from '../createPostComponent/CreatePost';
 import Users from '../usersComponent/Users';
 import User from '../userComponent/User';
@@ -21,8 +21,11 @@ function Content(props) {
     return (
         <Router>
             <nav className="menu">
-                <div className="logo-wrapper">
-                    <img className="logo" src={logo} alt="logo"></img>
+                <div className="sidebar-header">
+                    <div className='logo-wrapper'>
+                        <img className="logo" src={logo} alt="logo"></img>
+                        <Typography variant="h5">My Dear Neaighbour</Typography>
+                    </div>
                     <LanguageSwitch />
                 </div>
                 <Divider />

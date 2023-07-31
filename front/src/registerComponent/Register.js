@@ -29,7 +29,7 @@ function Register(props) {
             country: '',
             city: '',
             street: '',
-            houseNumber: 0,
+            house_number: 0,
             entrance: 0,
             floor: 0,
             flat: 0
@@ -78,7 +78,7 @@ function Register(props) {
                 !address.country || !nameRegEx.test(address.country) ||
                 !address.city || !nameRegEx.test(address.city) ||
                 !address.street || !nameRegEx.test(address.street) ||
-                !address.houseNumber || !numberRegEx.test(address.houseNumber) ||
+                !address.house_number || !numberRegEx.test(address.house_number) ||
                 !address.entrance || !numberRegEx.test(address.entrance) || 
                 !address.floor || !numberRegEx.test(address.floor) || 
                 !address.flat || !numberRegEx.test(address.flat)) {
@@ -87,7 +87,7 @@ function Register(props) {
                 return;
             }
             else {
-                formData.address.houseNumber = parseInt(address.houseNumber);
+                formData.address.house_number = parseInt(address.house_number);
                 formData.address.entrance = parseInt(address.entrance);
                 formData.address.floor = parseInt(address.floor);
                 formData.address.flat  = parseInt(address.flat);
@@ -254,14 +254,14 @@ function Register(props) {
                         fullWidth
                         label={t('auth.houseNumber')}
                         type="number" 
-                        value={formData.address.houseNumber} 
+                        value={formData.address.house_number} 
                         onChange={
                             (e) => {
                                 setFormData({
                                     ...formData,
                                     address: {
                                         ...formData.address,
-                                        houseNumber: e.target.value
+                                        house_number: e.target.value
                                     }
                                 });
                             }

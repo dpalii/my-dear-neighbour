@@ -24,7 +24,8 @@ class AuthController {
                 return;
             }
 
-            if (await Credentials.findOne({ phone: phone }).exec()) {
+            const existingPhone = await Credentials.findOne({ phone: phone }).exec();
+            if (existingPhone) {
                 res.status(400).json({
                     message: "Phone is not unique"
                 });
